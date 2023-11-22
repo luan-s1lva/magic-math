@@ -1,12 +1,13 @@
 //Link do vídeo de explicação do jogo
 //https://youtu.be/5bzWy02YTNE
 class Escolha {
-  constructor(name, posicaoY, posicaoX, altura, largura) {
+  constructor(name, posicaoY, posicaoX, altura, largura,resposta) {
     this.name = name;
     this.posicaoY = posicaoY;
     this.posicaoX = posicaoX;
     this.altura = altura;
     this.largura = largura;
+    this.resposta = resposta;
   }
 }
 
@@ -33,17 +34,17 @@ let escolhaImg2;
 let escolhaImg3;
 let escolhaImg4;
 
-//Posição do Personagem Principal
-let principal = new Principal(200,200,50,50);
+//Objeto do Personagem Principal
+let principal;
 
-//Posição das Esolhas
-let escolha1 = new Escolha('escolha1',350,100,40,40,false);
+//Objeto das Esolhas
+let escolha1;
 
-let escolha2 = new Escolha('escolha2',350,200,40,40,false);
+let escolha2;
   
-let escolha3 = new Escolha('escolha3',350,300,40,40,false);
+let escolha3;
 
-let escolha4 = new Escolha('escolha4',350,400,40,40,false);
+let escolha4;
 
 //Variáveis de detecção de colisão
 let collide1 = false;
@@ -54,6 +55,14 @@ let collide3 = false;
 
 let collide4 = false;
 
+let collideEquation1 = false;
+
+let collideEquation2 = false;
+
+let collideEquation3 = false;
+
+let collideEquation4 = false;
+
 //Array com os números da equação
 let arrValores = [];
 
@@ -63,6 +72,9 @@ let dificuldades = ["Fácil", "Médio", "Difícil"];
 //Nível de dificuldade do jogo
 let nivel = dificuldades[0];
 
+//Coordenadas da equação
+let eqX = 140;
+let eqY = 50;
 
 // coordenadas dos botoes
 var xbotao1, ybotao1;
@@ -166,15 +178,34 @@ function preload() {
   
   hero = newHeroImages[8];
   
-  arrWrongAnswers = [round(random(arrValores[1],arrValores[1]+50)),
-                     round(random(arrValores[1],arrValores[1]+12)),
-                     round(random(arrValores[1],arrValores[1]-29))
-                    ];
+  
+  let respCorreta = round(random(0,3));
+  arrWrongAnswers[respCorreta] = arrValores[1];
+  
+    for (let i = 0; i < 4; i++) {
+      
+      if (i !== respCorreta) {
+        arrWrongAnswers[i] = round(random(0,50));
+      }
+    }
+  
+  //Posição do Personagem Principal
+   principal = new Principal(200,200,50,50);
+
+  //Posição das Esolhas
+   escolha1 = new Escolha('escolha1',350,100,40,40,arrWrongAnswers[0]);
+
+   escolha2 = new Escolha('escolha2',350,200,40,40,arrWrongAnswers[1]);
+
+   escolha3 = new Escolha('escolha3',350,300,40,40,arrWrongAnswers[2]);
+
+   escolha4 = new Escolha('escolha4',350,400,40,40,arrWrongAnswers[3]);
 }
 
 var fundo;
 var img1;
 var img2;
+
 function setup() {
   createCanvas(500, 500);
   xbotao1 = 160;
@@ -286,7 +317,7 @@ function jogar(){
   //textSize(60);
   textFont('georgia');
   textSize(50);
-  text(arrValores[0], 140, 50);
+  text(arrValores[0], eqX, eqY);
   
   //Persona Principal
   image(hero,principal.x,principal.y);
@@ -294,19 +325,19 @@ function jogar(){
   //escolhas
   image(escolhaImg1, escolha1.posicaoX, escolha1.posicaoY, escolha1.altura, escolha1.largura);
   textSize(24);
-  text(arrValores[1],escolha1.posicaoX+10, escolha1.posicaoY+22);
+  text(escolha1.resposta,escolha1.posicaoX+10, escolha1.posicaoY+22);
   
   image(escolhaImg2,escolha2.posicaoX, escolha2.posicaoY, escolha2.altura, escolha2.largura);
   textSize(24);  
-  text(arrWrongAnswers[0],escolha2.posicaoX, escolha2.posicaoY+22);
+  text(escolha2.resposta,escolha2.posicaoX, escolha2.posicaoY+22);
   
   image(escolhaImg3,escolha3.posicaoX, escolha3.posicaoY, escolha3.altura, escolha3.largura);
   textSize(24);
-  text(arrWrongAnswers[1],escolha3.posicaoX, escolha3.posicaoY+22);
+  text(escolha3.resposta,escolha3.posicaoX, escolha3.posicaoY+22);
   
   image(escolhaImg4,escolha4.posicaoX, escolha4.posicaoY, escolha4.altura, escolha4.largura);
   textSize(24);
-  text(arrWrongAnswers[2],escolha4.posicaoX, escolha4.posicaoY+22);
+  text(escolha4.resposta,escolha4.posicaoX, escolha4.posicaoY+22);
   
   //Funções
   detectarColisao();
@@ -333,6 +364,44 @@ function keyPressed(escolhido) {
   }
 }
 
+function conferirResultado (escolha) {
+  console.log("Conferir Resultado");
+  
+  if (escolha === '1') {
+    if (arrValores[1] === escolha1.resposta) {
+      text("Próxima Fase",180,250);
+      noLoop();
+    } else {
+      text("GAME OVER",180,250);
+      noLoop();
+    }
+  } else if (escolha === '2') {
+    if (arrValores[1] === escolha2.resposta) {
+      text("Próxima Fase",180,250);
+      noLoop();
+    } else {
+      text("GAME OVER",180,250);
+      noLoop();
+    }
+  } else if (escolha === '3') {
+    if (arrValores[1] === escolha3.resposta) {
+      text("Próxima Fase",180,250);
+      noLoop();
+    } else {
+      text("GAME OVER",180,250);
+      noLoop();
+    }
+  } else if (escolha === '4') {
+    if (arrValores[1] === escolha4.resposta) {
+      text("Próxima Fase",180,250);
+      noLoop();
+    } else {
+      text("GAME OVER",180,250);
+      noLoop();
+    }
+  }
+}
+  
 function agarrar () {
     if (principal.y > 250) {
        textSize(32);
@@ -352,6 +421,14 @@ function agarrar () {
 }
 
 function detectarColisao () {
+  collideEquation1 = collideRectRect(escolha1.posicaoX,escolha1.posicaoY,escolha1.altura,escolha1.largura,eqX,eqY,220,30);
+  
+  collideEquation2 = collideRectRect(escolha2.posicaoX,escolha2.posicaoY,escolha2.altura,escolha2.largura,eqX,eqY,220,30);
+  
+  collideEquation3 = collideRectRect(escolha3.posicaoX,escolha3.posicaoY,escolha3.altura,escolha3.largura,eqX,eqY,220,30);
+  
+  collideEquation4 = collideRectRect(escolha4.posicaoX,escolha4.posicaoY,escolha4.altura,escolha4.largura,eqX,eqY,220,30);
+  
   collide1 =     collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha1.posicaoX, escolha1.posicaoY,escolha1.altura,escolha1.largura);
   
   collide2 =     collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha2.posicaoX, escolha2.posicaoY,escolha2.altura,escolha2.largura);
@@ -362,6 +439,16 @@ function detectarColisao () {
   
   if (collide1 || collide2 || collide3 || collide4) {
       agarrar();
+  }
+  
+  if (collideEquation1) {
+    conferirResultado('1');
+  } else if (collideEquation2) {
+    conferirResultado('2');
+  } else if (collideEquation3) {
+    conferirResultado('3');
+  } else if (collideEquation4) {
+    conferirResultado('4');
   }
 }
 
@@ -402,7 +489,6 @@ function instrucoes(){
   text("X para agarrar a resposta",20,360);
 }
 function creditos(){
-
 background (220);
 textSize(36);
 fill(10);
