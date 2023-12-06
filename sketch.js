@@ -20,6 +20,20 @@ class Principal {
   }
 }
 
+//Variável de nível
+let dificuldades = ["Facil","Médio","Difícil"];
+let nivel = dificuldades[0];
+
+//Variável que para o relógio
+let isClockRunning = false;
+
+//Varáveis da pontuação
+let pontuacao = 0;
+
+//Varáveis do tempo
+let tempo = 1;
+let arrTempo = [];
+
 //Váriavel do heroi
 let hero;
 let heroImages = [];
@@ -66,15 +80,9 @@ let collideEquation4 = false;
 //Array com os números da equação
 let arrValores = [];
 
-//Array com as dificuldades
-let dificuldades = ["Fácil", "Médio", "Difícil"];
-
-//Nível de dificuldade do jogo
-let nivel = dificuldades[0];
-
 //Coordenadas da equação
 let eqX = 140;
-let eqY = 50;
+let eqY = 120;
 
 // coordenadas dos botoes
 var xbotao1, ybotao1;
@@ -94,6 +102,10 @@ var posiCursorb2 = 2;
 var posiCursorb3 = 3;
 var posiCursorb4 = 4;
 var posiCursorb5 = 5;
+
+function reset() {
+  window.location.reload();  
+}
 
 function gerarNumeros () {
   //noLoop();
@@ -138,7 +150,7 @@ function gerarNumeros () {
 
     equacao = [conta, resultado];
   } else if (nivel === dificuldades[1]) {
-    
+    equacao = ["conta", 12];
   } else if (nivel === dificuldades[2]) {
     
   }
@@ -146,10 +158,12 @@ function gerarNumeros () {
   return equacao;
 }
 
-
 function preload() {
+    arrValores = gerarNumeros();
+
+  imgGameOver = loadImage("QeMS.gif");
+  imgNextLevel = loadImage("levelUp.jpg");
   
-  arrValores = gerarNumeros();
   heroImages = ['/assets/images/principal/tile000.png',
                 '/assets/images/principal/tile001.png',
                 '/assets/images/principal/tile002.png',
@@ -177,7 +191,6 @@ function preload() {
   escolhaImg4 = loadImage('assets/images/blocks/pink.png');
   
   hero = newHeroImages[8];
-  
   
   let respCorreta = round(random(0,3));
   arrWrongAnswers[respCorreta] = arrValores[1];
@@ -208,6 +221,7 @@ var img2;
 
 function setup() {
   createCanvas(500, 500);
+  
   xbotao1 = 160;
   ybotao1 = 150;
   
@@ -238,37 +252,6 @@ function draw() {
     creditos();
   }
 
-}
-
-function keyPressed(){
-  if (keyCode === UP_ARROW) {
-    if (posiCursor > 1){
-       posiCursor = posiCursor - 1;   
-    }
-  } else if (keyCode === DOWN_ARROW) {
-    if (posiCursor < 3) {
-       posiCursor = posiCursor + 1; 
-    }
-  } else {}
-  
-  if(keyCode==ENTER){
-    console.log(posiCursor)
-    if (posiCursor == 1) {
-      estado = 2;
-    } else if (posiCursor == 2) {
-      estado = 3; 
-    } else if (posiCursor === 3) {
-      estado = 4;
-    }
-  }
-  
-  if (posiCursor === 1) {
-    ycursor = ybotao1;
-  } else if (posiCursor === 2) {
-    ycursor = ybotao2;
-  } else if (posiCursor === 3) {
-    ycursor = ybotao3;
-  }
 }
 
 function menu(){
@@ -307,16 +290,198 @@ function menu(){
   rect(xcursor, ycursor, 190, 50,190,50);
 }
 
+function gameOver () {
+  let largura = width;
+  let altura = height;
+  
+  background(0,0,0);
+  image(imgGameOver, 95, 20);
+  fill(0, 255, 0);
+  rect(largura / 2 - 135, altura / 2 + 40, 300, 40);
+  fill(255);
+  textAlign(CENTER,CENTER);
+  textSize(18);
+  text("Aperte V para jogar novamente", largura / 2 + 15, altura / 2 + 60);
+}
+
+function nextLevel () {
+   //estado = 5;
+   background(255,255,255);
+   image(imgNextLevel, 70, 20);    
+   fill(0, 255, 0);
+   rect(width / 2 - 80, height / 2 + 40, 150, 40);
+   fill(255);
+   textSize(18);
+   text("Aperte Q para ir para a próxima fase", width/2 - 30, height/2+65);
+}
+
+function vitoriaFinal () {
+   pontuador();
+   background(255,255,255);
+   fill(0);
+   textSize(22);
+   text("Obrigado por ajudar o herói a salvar o dia!",50,100);
+   text("Sua pontuação foi: " + pontuacao, 60,220);
+}
+ 
+function relogio () {
+  if (frameCount % 60 == 0 && tempo > 0 && isClockRunning === true) { 
+    tempo++;
+  }
+}
+
+function pontuador () {
+  for (i = 0; i < arrTempo.length(); i++) {
+    if (arrTempo[i] < 10) {
+      pontuacao = arrTempo[i] * 100;
+    } else if (arrTempo[i] > 10 && arrTempo[i] < 25) {
+      pontuacao = arrTempo[i] * 50;
+    } else {
+      pontuacao = arrTempo[i] * 20;
+    }
+  }
+}
+
+function detectarColisao () {
+  collideEquation1 = collideRectRect(escolha1.posicaoX,escolha1.posicaoY,escolha1.altura,escolha1.largura,eqX,eqY,220,30);
+  
+  collideEquation2 = collideRectRect(escolha2.posicaoX,escolha2.posicaoY,escolha2.altura,escolha2.largura,eqX,eqY,220,30);
+  
+  collideEquation3 = collideRectRect(escolha3.posicaoX,escolha3.posicaoY,escolha3.altura,escolha3.largura,eqX,eqY,220,30);
+  
+  collideEquation4 = collideRectRect(escolha4.posicaoX,escolha4.posicaoY,escolha4.altura,escolha4.largura,eqX,eqY,220,30);
+  
+  collide1 =     collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha1.posicaoX, escolha1.posicaoY,escolha1.altura,escolha1.largura);
+  
+  collide2 =     collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha2.posicaoX, escolha2.posicaoY,escolha2.altura,escolha2.largura);
+  
+  collide3 =   collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha3.posicaoX, escolha3.posicaoY,escolha3.altura,escolha3.largura);
+  
+  collide4 =   collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha4.posicaoX, escolha4.posicaoY,escolha4.altura,escolha4.largura);
+  
+  if (collide1 || collide2 || collide3 || collide4) {
+      if (principal.y > 250) {
+       textSize(32);
+      text('Aperte X para agarrar', 100, 180); 
+    }
+    
+    if (collide1) {
+      keyPressed('1');      
+    } else if (collide2) {
+      keyPressed('2');
+    } else if (collide3) {
+      keyPressed('3');
+    } else if (collide4) {
+      keyPressed('4');
+    } else {
+    }
+  }
+  
+  if (collideEquation1) {
+    conferirResultado('1');
+  } else if (collideEquation2) {
+    conferirResultado('2');
+  } else if (collideEquation3) {
+    conferirResultado('3');
+  } else if (collideEquation4) {
+    conferirResultado('4');
+  }
+}
+
+function keyPressed(escolhido) {
+  if (keyIsDown(88) && escolhido === '1') {
+    /*Fazendo a escolha seguir o personagem principal*/
+    escolha1.posicaoY = principal.y;
+    escolha1.posicaoX = principal.x;
+  } else if (keyIsDown(88) && escolhido === '2') {
+    /*Fazendo a escolha seguir o personagem principal*/
+    escolha2.posicaoY = principal.y;
+    escolha2.posicaoX = principal.x;
+  } else if (keyIsDown(88) && escolhido === '3') {
+    /*Fazendo a escolha seguir o personagem principal*/
+    escolha3.posicaoY = principal.y;
+    escolha3.posicaoX = principal.x;
+  } else if (keyIsDown(88) && escolhido === '4') {
+    /*Fazendo a escolha seguir o personagem principal*/
+    escolha4.posicaoY = principal.y;
+    escolha4.posicaoX = principal.x;
+  } else {
+  }
+  
+  if (keyCode === UP_ARROW) {
+    if (posiCursor > 1){
+       posiCursor = posiCursor - 1;   
+    }
+  } else if (keyCode === DOWN_ARROW) {
+    if (posiCursor < 3) {
+       posiCursor = posiCursor + 1; 
+    }
+  } else {}
+  
+  if(keyCode==ENTER){
+    if (posiCursor == 1) {
+      estado = 2;
+    } else if (posiCursor == 2) {
+      estado = 3; 
+    } else if (posiCursor === 3) {
+      estado = 4;
+    }
+  }
+  
+  //V
+  if (keyCode === 86) {
+    reset();
+  }
+  
+  //Q
+  if (keyCode === 81) {
+    fase2();
+  }
+  
+  if (posiCursor === 1) {
+    ycursor = ybotao1;
+  } else if (posiCursor === 2) {
+    ycursor = ybotao2;
+  } else if (posiCursor === 3) {
+    ycursor = ybotao3;
+  }
+}
+
+function mover() {
+    if (keyIsDown(UP_ARROW)) {
+      principal.y-=2;
+      frameRate(45);
+      hero = newHeroImages[round(random([2,3,10]))];
+    } else if (keyIsDown(DOWN_ARROW)) {
+      principal.y+=2;
+      frameRate(45);
+      hero = newHeroImages[round(random([0,1,8]))];
+    } else if (keyIsDown(LEFT_ARROW)) {
+      principal.x-=2;
+      frameRate(45);
+      hero = newHeroImages[round(random([4,5,6,7,9]))];
+    } else if (keyIsDown(RIGHT_ARROW)) {
+      principal.x+=2;
+      frameRate(45);
+      hero = newHeroImages[round(random(11,15))];
+    } else {
+    } 
+}
+
 function jogar(){
+  console.log(nivel);
   background(fundo,32,178,170);
+  isClockRunning = true;
+  relogio();
   
   stroke(0,0,0);
   fill(0,0,0);
   strokeWeight(1);
   fill(255,215,0);
-  //textSize(60);
   textFont('georgia');
   textSize(50);
+  
+  text(tempo, 10, 45);
   text(arrValores[0], eqX, eqY);
   
   //Persona Principal
@@ -342,136 +507,111 @@ function jogar(){
   //Funções
   detectarColisao();
   mover();
-
-function keyPressed(escolhido) {
-  if (keyIsDown(88) && escolhido === '1') {
-    /*Fazendo a escolha seguir o personagem principal*/
-    escolha1.posicaoY = principal.y;
-    escolha1.posicaoX = principal.x;
-  } else if (keyIsDown(88) && escolhido === '2') {
-    /*Fazendo a escolha seguir o personagem principal*/
-    escolha2.posicaoY = principal.y;
-    escolha2.posicaoX = principal.x;
-  } else if (keyIsDown(88) && escolhido === '3') {
-    /*Fazendo a escolha seguir o personagem principal*/
-    escolha3.posicaoY = principal.y;
-    escolha3.posicaoX = principal.x;
-  } else if (keyIsDown(88) && escolhido === '4') {
-    /*Fazendo a escolha seguir o personagem principal*/
-    escolha4.posicaoY = principal.y;
-    escolha4.posicaoX = principal.x;
-  } else {
-  }
 }
 
-function conferirResultado (escolha) {
-  console.log("Conferir Resultado");
+function conferirResultado (escolha) {   
+  /*Relogio para de rodar e é capturado os segundos que
+  o jogador passou jogando*/
+  isClockRunning = false;
   
   if (escolha === '1') {
     if (arrValores[1] === escolha1.resposta) {
-      text("Próxima Fase",180,250);
       noLoop();
+      arrTempo.push(tempo);
+      console.log(arrTempo);
+      nextLevel();
     } else {
-      text("GAME OVER",180,250);
-      noLoop();
+      gameOver();
     }
   } else if (escolha === '2') {
     if (arrValores[1] === escolha2.resposta) {
-      text("Próxima Fase",180,250);
       noLoop();
+      arrTempo.push(tempo);
+      console.log(arrTempo);
+      nextLevel();
     } else {
-      text("GAME OVER",180,250);
-      noLoop();
+      gameOver();
     }
   } else if (escolha === '3') {
     if (arrValores[1] === escolha3.resposta) {
-      text("Próxima Fase",180,250);
       noLoop();
+      arrTempo.push(tempo);
+      console.log(arrTempo);
+      nextLevel();
     } else {
-      text("GAME OVER",180,250);
-      noLoop();
+      gameOver();
     }
   } else if (escolha === '4') {
     if (arrValores[1] === escolha4.resposta) {
-      text("Próxima Fase",180,250);
       noLoop();
+      arrTempo.push(tempo);
+      console.log(arrTempo);
+      nextLevel();
     } else {
-      text("GAME OVER",180,250);
-      noLoop();
+      gameOver();
     }
-  }
-}
-  
-function agarrar () {
-    if (principal.y > 250) {
-       textSize(32);
-      text('Aperte X para agarrar', 100, 100); 
-    }
-    
-    if (collide1) {
-      keyPressed('1');      
-    } else if (collide2) {
-      keyPressed('2');
-    } else if (collide3) {
-      keyPressed('3');
-    } else if (collide4) {
-      keyPressed('4');
-    } else {
-    }
-}
-
-function detectarColisao () {
-  collideEquation1 = collideRectRect(escolha1.posicaoX,escolha1.posicaoY,escolha1.altura,escolha1.largura,eqX,eqY,220,30);
-  
-  collideEquation2 = collideRectRect(escolha2.posicaoX,escolha2.posicaoY,escolha2.altura,escolha2.largura,eqX,eqY,220,30);
-  
-  collideEquation3 = collideRectRect(escolha3.posicaoX,escolha3.posicaoY,escolha3.altura,escolha3.largura,eqX,eqY,220,30);
-  
-  collideEquation4 = collideRectRect(escolha4.posicaoX,escolha4.posicaoY,escolha4.altura,escolha4.largura,eqX,eqY,220,30);
-  
-  collide1 =     collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha1.posicaoX, escolha1.posicaoY,escolha1.altura,escolha1.largura);
-  
-  collide2 =     collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha2.posicaoX, escolha2.posicaoY,escolha2.altura,escolha2.largura);
-  
-  collide3 =   collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha3.posicaoX, escolha3.posicaoY,escolha3.altura,escolha3.largura);
-  
-  collide4 =   collideRectRect(principal.x,principal.y,principal.largura,principal.largura,escolha4.posicaoX, escolha4.posicaoY,escolha4.altura,escolha4.largura);
-  
-  if (collide1 || collide2 || collide3 || collide4) {
-      agarrar();
-  }
-  
-  if (collideEquation1) {
-    conferirResultado('1');
-  } else if (collideEquation2) {
-    conferirResultado('2');
-  } else if (collideEquation3) {
-    conferirResultado('3');
-  } else if (collideEquation4) {
-    conferirResultado('4');
   }
 }
 
-function mover() {
-    if (keyIsDown(UP_ARROW)) {
-      principal.y-=2;
-      frameRate(45);
-      hero = newHeroImages[round(random([2,3,10]))];
-    } else if (keyIsDown(DOWN_ARROW)) {
-      principal.y+=2;
-      frameRate(45);
-      hero = newHeroImages[round(random([0,1,8]))];
-    } else if (keyIsDown(LEFT_ARROW)) {
-      principal.x-=2;
-      frameRate(45);
-      hero = newHeroImages[round(random([4,5,6,7,9]))];
-    } else if (keyIsDown(RIGHT_ARROW)) {
-      principal.x+=2;
-      frameRate(45);
-      hero = newHeroImages[round(random(11,15))];
-    } else {
-    } 
-}
+function fase2 () { 
+  nivel = dificuldades[1];
+  tempo = 1;
+    arrValores = gerarNumeros();
+
+  imgGameOver = loadImage("QeMS.gif");
+  imgNextLevel = loadImage("levelUp.jpg");
+  
+  heroImages = ['/assets/images/principal/tile000.png',
+                '/assets/images/principal/tile001.png',
+                '/assets/images/principal/tile002.png',
+                '/assets/images/principal/tile003.png',
+                '/assets/images/principal/tile004.png',
+                '/assets/images/principal/tile005.png',
+                '/assets/images/principal/tile006.png',
+                '/assets/images/principal/tile007.png',
+                '/assets/images/principal/tile008.png',
+                '/assets/images/principal/tile009.png',
+                '/assets/images/principal/tile010.png',
+                '/assets/images/principal/tile011.png',
+                '/assets/images/principal/tile012.png',
+                '/assets/images/principal/tile013.png',
+                '/assets/images/principal/tile014.png',
+                '/assets/images/principal/tile015.png'];
+  
+  for (i = 0; i < heroImages.length; i++) {
+    newHeroImages[i] = loadImage(heroImages[i]); 
+  }
+  
+  escolhaImg1 = loadImage('assets/images/blocks/blue.png');
+  escolhaImg2 = loadImage('assets/images/blocks/green.png');
+  escolhaImg3 = loadImage('assets/images/blocks/red.png');
+  escolhaImg4 = loadImage('assets/images/blocks/pink.png');
+  
+  hero = newHeroImages[8];
+  
+  let respCorreta = round(random(0,3));
+  arrWrongAnswers[respCorreta] = arrValores[1];
+  
+    for (let i = 0; i < 4; i++) {
+      
+      if (i !== respCorreta) {
+        arrWrongAnswers[i] = round(random(0,50));
+      }
+    }
+  
+  //Posição do Personagem Principal
+   principal = new Principal(200,200,50,50);
+
+  //Posição das Esolhas
+   escolha1 = new Escolha('escolha1',350,100,40,40,arrWrongAnswers[0]);
+
+   escolha2 = new Escolha('escolha2',350,200,40,40,arrWrongAnswers[1]);
+
+   escolha3 = new Escolha('escolha3',350,300,40,40,arrWrongAnswers[2]);
+
+   escolha4 = new Escolha('escolha4',350,400,40,40,arrWrongAnswers[3]);
+  loop()
+  jogar();
 }
 
 
@@ -487,7 +627,9 @@ function instrucoes(){
   
   text("Setas do teclado para andar",20,320);
   text("X para agarrar a resposta",20,360);
+  text("Aperte V para voltar ao menu",30,430);
 }
+
 function creditos(){
 background (220);
 textSize(36);
@@ -506,4 +648,6 @@ text("responsável pelo menu do jogo, GDD, sons e colabeduc ",180,165, 300 );
 text("responsável pela fase 1 do jogo, video explicativo e imagens 2D" ,180,345,300);
 image(img1, 20, 110,150,150);
 image(img2, 20, 280,150,150);
+  
+  text("Aperte V para voltar ao menu",160,480);
 }
