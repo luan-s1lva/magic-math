@@ -152,7 +152,7 @@ function gerarNumeros () {
   } else if (nivel === dificuldades[1]) {
     equacao = ["conta", 12];
   } else if (nivel === dificuldades[2]) {
-    
+    equacao = ["olá", "ameegan"];
   }
   
   return equacao;
@@ -305,14 +305,13 @@ function gameOver () {
 }
 
 function nextLevel () {
-   //estado = 5;
    background(255,255,255);
    image(imgNextLevel, 70, 20);    
    fill(0, 255, 0);
-   rect(width / 2 - 80, height / 2 + 40, 150, 40);
+   rect(width / 2 - 160, height / 2 + 40, 340, 40);
    fill(255);
    textSize(18);
-   text("Aperte Q para ir para a próxima fase", width/2 - 30, height/2+65);
+   text("Aperte Q para ir para a próxima fase", width/2 - 140, height/2+65);
 }
 
 function vitoriaFinal () {
@@ -331,13 +330,13 @@ function relogio () {
 }
 
 function pontuador () {
-  for (i = 0; i < arrTempo.length(); i++) {
+  for (i = 0; i < arrTempo.length; i++) {
     if (arrTempo[i] < 10) {
-      pontuacao = arrTempo[i] * 100;
+      pontuacao += 100;
     } else if (arrTempo[i] > 10 && arrTempo[i] < 25) {
-      pontuacao = arrTempo[i] * 50;
+      pontuacao += 50;
     } else {
-      pontuacao = arrTempo[i] * 20;
+      pontuacao += 20;
     }
   }
 }
@@ -435,7 +434,11 @@ function keyPressed(escolhido) {
   
   //Q
   if (keyCode === 81) {
-    fase2();
+    if (nivel === dificuldades[0]) {
+     fase2(); 
+    } else {
+      fase3();
+    }
   }
   
   if (posiCursor === 1) {
@@ -514,7 +517,46 @@ function conferirResultado (escolha) {
   o jogador passou jogando*/
   isClockRunning = false;
   
-  if (escolha === '1') {
+  if (nivel === dificuldades[2]) {
+    if (escolha === '1') {
+      if (arrValores[1] === escolha1.resposta) {
+        noLoop();
+        arrTempo.push(tempo);
+        console.log(arrTempo);
+        vitoriaFinal();
+      } else {
+        gameOver();
+      }
+    } else if (escolha === '2') {
+      if (arrValores[1] === escolha2.resposta) {
+        noLoop();
+        arrTempo.push(tempo);
+        console.log(arrTempo);
+        vitoriaFinal();
+      } else {
+        gameOver();
+      }
+    } else if (escolha === '3') {
+      if (arrValores[1] === escolha3.resposta) {
+        noLoop();
+        arrTempo.push(tempo);
+        console.log(arrTempo);
+        vitoriaFinal();
+      } else {
+        gameOver();
+      }
+    } else if (escolha === '4') {
+      if (arrValores[1] === escolha4.resposta) {
+        noLoop();
+        arrTempo.push(tempo);
+        console.log(arrTempo);
+        vitoriaFinal();
+      } else {
+        gameOver();
+      }
+    }
+  } else {
+    if (escolha === '1') {
     if (arrValores[1] === escolha1.resposta) {
       noLoop();
       arrTempo.push(tempo);
@@ -523,71 +565,41 @@ function conferirResultado (escolha) {
     } else {
       gameOver();
     }
-  } else if (escolha === '2') {
-    if (arrValores[1] === escolha2.resposta) {
-      noLoop();
-      arrTempo.push(tempo);
-      console.log(arrTempo);
-      nextLevel();
-    } else {
-      gameOver();
-    }
-  } else if (escolha === '3') {
-    if (arrValores[1] === escolha3.resposta) {
-      noLoop();
-      arrTempo.push(tempo);
-      console.log(arrTempo);
-      nextLevel();
-    } else {
-      gameOver();
-    }
-  } else if (escolha === '4') {
-    if (arrValores[1] === escolha4.resposta) {
-      noLoop();
-      arrTempo.push(tempo);
-      console.log(arrTempo);
-      nextLevel();
-    } else {
-      gameOver();
-    }
+    } else if (escolha === '2') {
+      if (arrValores[1] === escolha2.resposta) {
+        noLoop();
+        arrTempo.push(tempo);
+        console.log(arrTempo);
+        nextLevel();
+      } else {
+        gameOver();
+      }
+    } else if (escolha === '3') {
+      if (arrValores[1] === escolha3.resposta) {
+        noLoop();
+        arrTempo.push(tempo);
+        console.log(arrTempo);
+        nextLevel();
+      } else {
+        gameOver();
+      }
+    } else if (escolha === '4') {
+      if (arrValores[1] === escolha4.resposta) {
+        noLoop();
+        arrTempo.push(tempo);
+        console.log(arrTempo);
+        nextLevel();
+      } else {
+        gameOver();
+      }
+    } 
   }
 }
 
 function fase2 () { 
   nivel = dificuldades[1];
   tempo = 1;
-    arrValores = gerarNumeros();
-
-  imgGameOver = loadImage("QeMS.gif");
-  imgNextLevel = loadImage("levelUp.jpg");
-  
-  heroImages = ['/assets/images/principal/tile000.png',
-                '/assets/images/principal/tile001.png',
-                '/assets/images/principal/tile002.png',
-                '/assets/images/principal/tile003.png',
-                '/assets/images/principal/tile004.png',
-                '/assets/images/principal/tile005.png',
-                '/assets/images/principal/tile006.png',
-                '/assets/images/principal/tile007.png',
-                '/assets/images/principal/tile008.png',
-                '/assets/images/principal/tile009.png',
-                '/assets/images/principal/tile010.png',
-                '/assets/images/principal/tile011.png',
-                '/assets/images/principal/tile012.png',
-                '/assets/images/principal/tile013.png',
-                '/assets/images/principal/tile014.png',
-                '/assets/images/principal/tile015.png'];
-  
-  for (i = 0; i < heroImages.length; i++) {
-    newHeroImages[i] = loadImage(heroImages[i]); 
-  }
-  
-  escolhaImg1 = loadImage('assets/images/blocks/blue.png');
-  escolhaImg2 = loadImage('assets/images/blocks/green.png');
-  escolhaImg3 = loadImage('assets/images/blocks/red.png');
-  escolhaImg4 = loadImage('assets/images/blocks/pink.png');
-  
-  hero = newHeroImages[8];
+  arrValores = gerarNumeros();
   
   let respCorreta = round(random(0,3));
   arrWrongAnswers[respCorreta] = arrValores[1];
@@ -610,13 +622,44 @@ function fase2 () {
    escolha3 = new Escolha('escolha3',350,300,40,40,arrWrongAnswers[2]);
 
    escolha4 = new Escolha('escolha4',350,400,40,40,arrWrongAnswers[3]);
+  
   loop()
   jogar();
 }
 
+function fase3 () {  
+  nivel = dificuldades[2];
+  tempo = 1;
+  arrValores = gerarNumeros();
+  
+  let respCorreta = round(random(0,3));
+  arrWrongAnswers[respCorreta] = arrValores[1];
+  
+    for (let i = 0; i < 4; i++) {
+      
+      if (i !== respCorreta) {
+        arrWrongAnswers[i] = round(random(0,50));
+      }
+    }
+  
+  //Posição do Personagem Principal
+   principal = new Principal(200,200,50,50);
+
+  //Posição das Esolhas
+   escolha1 = new Escolha('escolha1',350,100,40,40,arrWrongAnswers[0]);
+
+   escolha2 = new Escolha('escolha2',350,200,40,40,arrWrongAnswers[1]);
+
+   escolha3 = new Escolha('escolha3',350,300,40,40,arrWrongAnswers[2]);
+
+   escolha4 = new Escolha('escolha4',350,400,40,40,arrWrongAnswers[3]);
+  
+  loop()
+  jogar();
+}
 
 function instrucoes(){
-   background(fundo, 70);
+  background(fundo, 70);
   stroke(255,215,0);
   fill(0,0,0);
   strokeWeight(0);
@@ -624,30 +667,28 @@ function instrucoes(){
   text('Instruções:',180,70);
   textSize(25);
   text("O jogo consiste em gerar equações aleato-\nriamente, que aparecerão na parte superior\n da tela, já na inferior haverá 4 opções de \nrespostas, onde penas uma opção será \ncorreta. O personagem deve escolher uma\n das opções e leva-las até a equação.",20,120);  
-  
   text("Setas do teclado para andar",20,320);
   text("X para agarrar a resposta",20,360);
   text("Aperte V para voltar ao menu",30,430);
 }
 
 function creditos(){
-background (220);
-textSize(36);
-fill(10);
-text("Créditos", 160,70);
-textSize(20);
-text ("MANUELLY BARBOSA",200, 120 );
-text ("LUAN SILVA" ,240,300);
-textSize (16);
-text("Função:programadora", 230,140);
-text ("Função:programador", 230,320);
-textSize(14);
-fill(80);
+  background (220);
+  textSize(36);
+  fill(10);
+  text("Créditos", 160,70);
+  textSize(20);
+  text ("MANUELLY BARBOSA",200, 120 );
+  text ("LUAN SILVA" ,240,300);
+  textSize (16);
+  text("Função:programadora", 230,140);
+  text ("Função:programador", 230,320);
+  textSize(14);
+  fill(80);
+  text("responsável pelo menu do jogo, GDD, sons e colabeduc",180,165,300);
+  text("responsável pela fase 1 do jogo, video explicativo e imagens 2D",180,345,300);
+  image(img1, 20, 110,150,150);
+  image(img2, 20, 280,150,150);
 
-text("responsável pelo menu do jogo, GDD, sons e colabeduc ",180,165, 300 );
-text("responsável pela fase 1 do jogo, video explicativo e imagens 2D" ,180,345,300);
-image(img1, 20, 110,150,150);
-image(img2, 20, 280,150,150);
-  
   text("Aperte V para voltar ao menu",160,480);
 }
