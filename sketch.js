@@ -20,6 +20,10 @@ class Principal {
   }
 }
 
+//Áudio
+let pegar;
+
+
 //Variável de nível
 let dificuldades = ["Facil","Médio","Difícil"];
 let nivel = dificuldades[0];
@@ -213,6 +217,12 @@ function preload() {
    escolha3 = new Escolha('escolha3',350,300,40,40,arrWrongAnswers[2]);
 
    escolha4 = new Escolha('escolha4',350,400,40,40,arrWrongAnswers[3]);
+  
+  //Áudio
+  soundFormats("wav");
+  pegar = loadSound("assets/music/pickupCoin.wav");
+  vencer = loadSound("assets/music/powerUp.wav");
+  perder = loadSound("assets/music/laserShoot.wav");
 }
 
 var fundo;
@@ -264,8 +274,7 @@ function menu(){
   textFont('georgia');
   text('MAGIC MATH',46,100);
   
-  
-// desenho do botao 1
+  //desenho do botao 1
   fill(255,215,0);
   rect(xbotao1, ybotao1, 190,50,190,50);
   fill(0,0,0);
@@ -291,6 +300,11 @@ function menu(){
 }
 
 function gameOver () {
+  //vencer.stop();
+  //pegar.stop();
+  noLoop();
+  perder.play();
+  
   let largura = width;
   let altura = height;
   
@@ -361,11 +375,11 @@ function detectarColisao () {
   if (collide1 || collide2 || collide3 || collide4) {
       if (principal.y > 250) {
        textSize(32);
-      text('Aperte X para agarrar', 100, 180); 
+      text('Aperte X para agarrar', 100, 180);
     }
     
     if (collide1) {
-      keyPressed('1');      
+      keyPressed('1'); 
     } else if (collide2) {
       keyPressed('2');
     } else if (collide3) {
@@ -387,26 +401,47 @@ function detectarColisao () {
   }
 }
 
+let cont = 0;
 function keyPressed(escolhido) {
   if (keyIsDown(88) && escolhido === '1') {
     /*Fazendo a escolha seguir o personagem principal*/
     escolha1.posicaoY = principal.y;
     escolha1.posicaoX = principal.x;
+    
+    if (keyCode === 88 && cont < 1) {
+      pegar.play();
+    }
+    cont++;
   } else if (keyIsDown(88) && escolhido === '2') {
     /*Fazendo a escolha seguir o personagem principal*/
     escolha2.posicaoY = principal.y;
     escolha2.posicaoX = principal.x;
+    
+    if (keyCode === 88 && cont < 1) {
+      pegar.play();
+    }
+    cont++;
   } else if (keyIsDown(88) && escolhido === '3') {
     /*Fazendo a escolha seguir o personagem principal*/
     escolha3.posicaoY = principal.y;
     escolha3.posicaoX = principal.x;
+    
+    if (keyCode === 88 && cont < 1) {
+      pegar.play();
+    }
+    cont++;
   } else if (keyIsDown(88) && escolhido === '4') {
     /*Fazendo a escolha seguir o personagem principal*/
     escolha4.posicaoY = principal.y;
     escolha4.posicaoX = principal.x;
+    
+    if (keyCode === 88 && cont < 1) {
+      pegar.play();
+    }
+    cont++;
   } else {
+    cont = 0;
   }
-  
   if (keyCode === UP_ARROW) {
     if (posiCursor > 1){
        posiCursor = posiCursor - 1;   
@@ -472,11 +507,10 @@ function mover() {
 }
 
 function jogar(){
-  console.log(nivel);
   background(fundo,32,178,170);
   isClockRunning = true;
   relogio();
-  
+
   stroke(0,0,0);
   fill(0,0,0);
   strokeWeight(1);
@@ -516,6 +550,8 @@ function conferirResultado (escolha) {
   /*Relogio para de rodar e é capturado os segundos que
   o jogador passou jogando*/
   isClockRunning = false;
+  pegar.stop();
+  vencer.play();
   
   if (nivel === dificuldades[2]) {
     if (escolha === '1') {
@@ -525,6 +561,7 @@ function conferirResultado (escolha) {
         console.log(arrTempo);
         vitoriaFinal();
       } else {
+        vencer.stop();
         gameOver();
       }
     } else if (escolha === '2') {
@@ -534,6 +571,7 @@ function conferirResultado (escolha) {
         console.log(arrTempo);
         vitoriaFinal();
       } else {
+        vencer.stop();
         gameOver();
       }
     } else if (escolha === '3') {
@@ -543,6 +581,7 @@ function conferirResultado (escolha) {
         console.log(arrTempo);
         vitoriaFinal();
       } else {
+        vencer.stop();
         gameOver();
       }
     } else if (escolha === '4') {
@@ -552,6 +591,7 @@ function conferirResultado (escolha) {
         console.log(arrTempo);
         vitoriaFinal();
       } else {
+        vencer.stop();
         gameOver();
       }
     }
@@ -563,6 +603,7 @@ function conferirResultado (escolha) {
       console.log(arrTempo);
       nextLevel();
     } else {
+      vencer.stop();
       gameOver();
     }
     } else if (escolha === '2') {
@@ -572,6 +613,7 @@ function conferirResultado (escolha) {
         console.log(arrTempo);
         nextLevel();
       } else {
+        vencer.stop();
         gameOver();
       }
     } else if (escolha === '3') {
@@ -581,6 +623,7 @@ function conferirResultado (escolha) {
         console.log(arrTempo);
         nextLevel();
       } else {
+        vencer.stop();
         gameOver();
       }
     } else if (escolha === '4') {
@@ -590,6 +633,7 @@ function conferirResultado (escolha) {
         console.log(arrTempo);
         nextLevel();
       } else {
+        vencer.stop();
         gameOver();
       }
     } 
